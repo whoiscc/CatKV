@@ -1,0 +1,39 @@
+#!/usr/bin/env bash
+set -euo pipefail
+[[ $(id -un) == dev ]] || { echo 'Run inside the container as dev.' >&2; exit 1; }
+test -w /workspaces/CatKV
+test -w /home/dev/.codex
+test -w /workspaces/CatKV/target
+rustc --version
+cargo --version
+rustfmt --version
+cargo clippy --version
+node --version
+codex --version
+codex sandbox -- /bin/true
+echo 'PASS: Codex nested Linux sandbox'
+clang --version | head -1
+pkg-config --modversion openssl
+python3 - <<'PY'
+import fcntl
+import os
+import pathlib
+import tempfile
+
+with tempfile.TemporaryDirectory(prefix='.catkv-env-', dir='/workspaces/CatKV') as directory:
+    root = pathlib.Path(directory)
+    with (root / 'LOCK').open('wb') as lock:
+        fcntl.flock(lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
+        with (root / 'candidate').open('wb') as data:
+            data.write(b'CatKV filesystem smoke check\n')
+            data.flush()
+            os.fsync(data.fileno())
+        os.replace(root / 'candidate', root / 'data')
+        directory_fd = os.open(root, os.O_RDONLY | os.O_DIRECTORY)
+        try:
+            os.fsync(directory_fd)
+        finally:
+            os.close(directory_fd)
+        assert (root / 'data').read_bytes() == b'CatKV filesystem smoke check\n'
+print('PASS: mounted workspace write, file lock, fsync, rename, directory fsync, readback')
+PY

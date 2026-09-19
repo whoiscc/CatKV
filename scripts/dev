@@ -1,0 +1,22 @@
+#!/usr/bin/env bash
+set -euo pipefail
+root=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/.." && pwd)
+compose=(docker compose -f "$root/.devcontainer/compose.yaml")
+case "${1:-help}" in
+  up)
+    test -s "$root/.devcontainer/local/authorized_keys" || {
+      echo 'Missing .devcontainer/local/authorized_keys; see docs/development.md.' >&2
+      exit 1
+    }
+    "${compose[@]}" up -d --build --wait
+    ;;
+  stop) "${compose[@]}" stop ;;
+  status) "${compose[@]}" ps ;;
+  logs) "${compose[@]}" logs --tail=100 dev ;;
+  shell) "${compose[@]}" exec --user dev dev bash -l ;;
+  check)
+    "${compose[@]}" exec -T --user dev dev bash -lc \
+      'cd /workspaces/CatKV && bash scripts/check-environment && cargo fmt --all -- --check && cargo clippy --workspace --all-targets -- -D warnings && cargo test --workspace'
+    ;;
+  *) echo 'Usage: bash scripts/dev {up|stop|status|logs|shell|check}' ;;
+esac

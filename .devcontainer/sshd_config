@@ -1,0 +1,18 @@
+Port 22
+ListenAddress 0.0.0.0
+HostKey /var/lib/catkv-ssh/ssh_host_ed25519_key
+PermitRootLogin no
+PubkeyAuthentication yes
+PasswordAuthentication no
+KbdInteractiveAuthentication no
+PermitEmptyPasswords no
+UsePAM yes
+AllowUsers dev
+AuthorizedKeysFile .ssh/authorized_keys
+AllowTcpForwarding yes
+GatewayPorts no
+X11Forwarding no
+PermitUserEnvironment no
+PrintMotd no
+Subsystem sftp internal-sftp
+AcceptEnv LANG LC_*

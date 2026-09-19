@@ -1,0 +1,8 @@
+/target/
+/.devcontainer/local/
+/.local/
+/.env
+/.env.*
+!/.env.example
+/.ssh/
+*.log

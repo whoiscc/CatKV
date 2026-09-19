@@ -1,0 +1,33 @@
+name: catkv-dev
+services:
+  dev:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: catkv-dev
+    hostname: catkv-dev
+    restart: unless-stopped
+    security_opt:
+      - seccomp=./seccomp.json
+    ports:
+      - "127.0.0.1:2222:22"
+    volumes:
+      - ..:/workspaces/CatKV
+      - ./local/authorized_keys:/run/catkv-authorized-keys:ro
+      - codex-home:/home/dev/.codex
+      - ssh-host-keys:/var/lib/catkv-ssh
+      - cargo-registry:/usr/local/cargo/registry
+      - cargo-git:/usr/local/cargo/git
+      - cargo-target:/workspaces/CatKV/target
+    healthcheck:
+      test: ["CMD-SHELL", "/usr/sbin/sshd -t && nc -z 127.0.0.1 22"]
+      interval: 5s
+      timeout: 3s
+      retries: 12
+      start_period: 10s
+volumes:
+  codex-home:
+  ssh-host-keys:
+  cargo-registry:
+  cargo-git:
+  cargo-target:

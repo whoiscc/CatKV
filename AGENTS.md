@@ -1,17 +1,23 @@
 # CatKV
 
-## Development environment
+CatKV is a from-scratch distributed key-value store project intended for public operation,
+real-world load testing, high availability, and horizontal scaling.
 
-- Clone the repository into a Linux filesystem (native Linux or WSL2).
-  The dev container mounts that checkout at `/workspaces/CatKV`.
-- Run builds and development commands inside the dev container as `dev`.
-- Rust is pinned by `rust-toolchain.toml`. Do not install project toolchains on Windows.
-- Read `docs/design-context.md` for the latest architecture boundaries and which choices remain proposals.
+## Start here
+
+- Read `docs/design-context.md` for goals, constraints, architecture decisions, proposals,
+  open questions, and implementation status. Keep proposals, decisions, and implemented behavior distinct.
+- `Cargo.toml` defines the Rust workspace.
+- See `docs/development.md` for container startup, environment checks, and editor connections.
+
+## Implementation principles
+
 - Prefer straightforward implementation over abstractions for hypothetical future needs.
-- Build the storage engine from scratch; do not substitute RocksDB or a ready-made replication protocol.
+
+## Development and validation
+
+- Run builds and development commands inside the Linux dev container as `dev`,
+  using the Rust toolchain pinned in `rust-toolchain.toml`.
 - Keep data, credentials, generated artifacts, and local SSH configuration out of Git.
 - For implemented Rust changes, run `cargo fmt --all -- --check`,
   `cargo clippy --workspace --all-targets -- -D warnings`, and relevant `cargo test` targets.
-- For storage changes, test recovery, corruption detection, compaction, and durability failure paths as applicable.
-- The current repository is environment scaffolding only. Do not claim that replication, sharding,
-  a public service, or even the local storage engine already exists.

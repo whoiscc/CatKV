@@ -3,7 +3,7 @@
 一个面向公开运行、公众压测、高可用和水平扩容的分布式键值存储项目。
 当前仓库只完成开发环境和 Rust workspace 骨架；存储引擎与分布式协议尚未实现。
 
-- [设计背景](docs/design-context.md)
+- [项目上下文：目标、约束、设计与实现状态](docs/design-context.md)
 - [开发环境与首次配置](docs/development.md)
 
 ## 日常使用
